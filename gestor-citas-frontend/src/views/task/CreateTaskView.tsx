@@ -4,7 +4,7 @@ import TaskForm from "../../components/tasks/TaskForm"
 import { TaskFormData } from "../../types"
 import { createTask } from "../../api/TaskApi"
 
-export default function CreateProjectView() {
+export default function CreateTaskView() {
 
     const initialValues: TaskFormData = {
         title: "",
