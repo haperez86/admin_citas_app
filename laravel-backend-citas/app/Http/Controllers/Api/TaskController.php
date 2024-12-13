@@ -10,8 +10,7 @@ use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    private $key = 'PASSWORD_DE_MI_APLICACION'; // Asegúrate de usar la misma clave para JWT
-
+   
     // Decodifica y valida el token
     protected function getUserFromToken(Request $request)
     {
@@ -69,6 +68,22 @@ class TaskController extends Controller
         return response()->json($tasks);
     }
 
+    public function show(Request $request, $id)
+    {
+        $userId = $request->attributes->get('user_id');
+        if (!$userId) {
+            return response()->json(['error' => 'Usuario no autenticado'], 401);
+        }
+
+        $task = Task::where('id', $id)->where('user_id', $userId)->first();
+
+        if (!$task) {
+            return response()->json(['error' => 'Tarea no encontrada o acceso denegado'], 404);
+        }
+
+        return response()->json($task);
+    }
+
     // Actualizar una tarea específica
     public function update(Request $request, $id)
     {
@@ -79,7 +94,7 @@ class TaskController extends Controller
 
         $task = Task::where('id', $id)->where('user_id', $userId)->first();
         if (!$task) {
-            return response()->json(['error' => 'Tarea no encontrada'], 404);
+            return response()->json(['error' => 'Tarea no encontrada o acceso denegado'], 404);
         }
 
         $request->validate([
@@ -103,7 +118,7 @@ class TaskController extends Controller
 
         $task = Task::where('id', $id)->where('user_id', $userId)->first();
         if (!$task) {
-            return response()->json(['error' => 'Tarea no encontrada'], 404);
+            return response()->json(['error' => 'Tarea no encontrada o acceso denegado'], 404);
         }
 
         $task->delete();

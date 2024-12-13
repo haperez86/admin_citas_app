@@ -11,7 +11,6 @@ use Firebase\JWT\Key;
 
 class AuthController extends Controller
 {
-    private $key = 'PASSWORD_DE_MI_APLICACION'; // Asegúrate de usar una clave segura
 
     public function register(Request $request)
     {
