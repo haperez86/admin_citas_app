@@ -105,7 +105,7 @@ class TaskController extends Controller
         ]);
 
         $task->update($request->only(['title', 'description', 'due_date', 'status']));
-        return response()->json($task);
+        return response()->json(['message' => 'Tarea Actualizada']);
     }
 
     // Eliminar una tarea específica

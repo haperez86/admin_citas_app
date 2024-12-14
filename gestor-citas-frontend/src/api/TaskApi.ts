@@ -72,3 +72,30 @@ export async function getTaskById(id: number) {
     }
 }
 
+type TaskAPIType = {
+    formData: TaskFormData,
+    tasksId: Task['id']
+}
+
+export async function updateTask({formData, tasksId} : TaskAPIType) {
+    const token = localStorage.getItem('AUTH_TOKEN');
+    try {
+        const { data } = await api.put<string>(`/tasks/${tasksId}`, formData, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return data
+
+    } catch (error) {
+        if (isAxiosError(error) && error.response) {
+            console.error('Error al obtener la tarea:', error.response.data.error);
+            throw new Error(error.response.data.error);
+        } else {
+            console.error('Error desconocido:', error);
+            throw new Error('Error desconocido al obtener la tarea.');
+        }
+    }
+}
+

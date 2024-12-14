@@ -1,21 +1,20 @@
-import { useParams } from "react-router-dom"
+import { Navigate, useParams } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { getTaskById } from "../../api/TaskApi"
-import { error } from "console"
+import EditTaskForm from "../../components/tasks/EditTaskForm"
+
 
 export default function EditTaskView() {
     const params = useParams()
     const tasksId = parseInt(params.tasksId!)
     
-    const { data, error, isLoading } = useQuery({
+    const { data, isLoading, isError } = useQuery({
         queryKey:['editTask', tasksId ],
         queryFn: () => getTaskById(tasksId),
         retry: false
     })
 
-    console.log(error)
-
-  return (
-    <div>EditTaskView</div>
-  )
+    if(isLoading) return 'Cargando...'
+    if(isError) return <Navigate to='/404' />
+    if(data) return <EditTaskForm data={data} tasksId={tasksId} />
 }
