@@ -26,3 +26,5 @@ tests: Carpetas para pruebas unitarias y de integración.
 Conexión Frontend - Backend
 Frontend: Utilizando React JS con tecnologías como Mutation y React-Query para manejar las interacciones con el backend.
 Backend: Exposición de APIs RESTful en Laravel utilizando JWT para la autenticación segura de usuarios.
+
+<img width="624" alt="image" src="https://github.com/user-attachments/assets/3aeda204-f185-47d6-9852-efa72e2cf5ee" />
