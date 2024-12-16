@@ -27,4 +27,12 @@ Conexión Frontend - Backend
 Frontend: Utilizando React JS con tecnologías como Mutation y React-Query para manejar las interacciones con el backend.
 Backend: Exposición de APIs RESTful en Laravel utilizando JWT para la autenticación segura de usuarios.
 
+Login
 <img width="624" alt="image" src="https://github.com/user-attachments/assets/3aeda204-f185-47d6-9852-efa72e2cf5ee" />
+
+Home
+<img width="606" alt="image" src="https://github.com/user-attachments/assets/9265f7e2-8672-44b1-b8df-0d12c0a380ab" />
+
+New Task
+<img width="515" alt="image" src="https://github.com/user-attachments/assets/e107125f-93bb-4eab-adc0-56177bfc6c98" />
+
