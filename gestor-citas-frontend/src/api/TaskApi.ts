@@ -4,22 +4,20 @@ import { dashboardTaskSchema, Task, TaskFormData } from "../types";
 import { taskSchema } from '../types';
 
 export async function createTask(formData: TaskFormData) {
+
     try {
         const { data } = await api.post('/tasks', formData);
-        console.log(data);
+
+        return data; // Devuelve los datos si es necesario.
     } catch (error) {
         console.error('Error al crear la tarea:', error);
+        throw new Error('No se pudo crear la tarea.');
     }
 }
 
 export async function getTasks() {
-    const token = localStorage.getItem('AUTH_TOKEN');
     try {
-        const { data } = await api('/tasks', {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const { data } = await api('/tasks');
 
         console.log('Datos recibidos del servidor:', data);
 
@@ -45,13 +43,8 @@ export async function getTasks() {
 
 
 export async function getTaskById(id: number) {
-    const token = localStorage.getItem('AUTH_TOKEN');
     try {
-        const { data } = await api(`/tasks/${id}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const { data } = await api(`/tasks/${id}`);
 
         // Validación con taskSchema para un objeto individual
         const response = taskSchema.safeParse(data);
@@ -78,13 +71,8 @@ type TaskAPIType = {
 }
 
 export async function updateTask({formData, tasksId} : TaskAPIType) {
-    const token = localStorage.getItem('AUTH_TOKEN');
     try {
-        const { data } = await api.put<string>(`/tasks/${tasksId}`, formData, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        const { data } = await api.put<string>(`/tasks/${tasksId}`, formData);
 
         return data
 
@@ -95,6 +83,30 @@ export async function updateTask({formData, tasksId} : TaskAPIType) {
         } else {
             console.error('Error desconocido:', error);
             throw new Error('Error desconocido al obtener la tarea.');
+        }
+    }
+}
+
+
+
+export async function deleteTask(id: number) {
+    const token = localStorage.getItem('AUTH_TOKEN');
+    try {
+        const { data } = await api.delete(`/tasks/${id}`);
+
+        // Verifica si la respuesta contiene un mensaje de éxito
+        if (typeof data === 'string' || (data && data.message)) {
+            return data; // Devuelve el mensaje o dato de éxito.
+        }
+
+        throw new Error('Respuesta inesperada del servidor al eliminar la tarea.');
+    } catch (error) {
+        if (isAxiosError(error) && error.response) {
+            console.error('Error al eliminar la tarea:', error.response.data.error);
+            throw new Error(error.response.data.error);
+        } else {
+            console.error('Error desconocido:', error);
+            throw new Error('Error desconocido al eliminar la tarea.');
         }
     }
 }

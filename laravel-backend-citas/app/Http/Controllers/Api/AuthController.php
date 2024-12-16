@@ -98,5 +98,45 @@ class AuthController extends Controller
             return response()->json(['error' => 'Token inválido o no procesable'], 401);
         }
     }
+
+    public function user(Request $request)
+    {
+        // Obtiene el token del encabezado Authorization
+        $token = $request->bearerToken();
+
+        if (!$token) {
+            return response()->json(['error' => 'Token no proporcionado'], 401);
+        }
+
+        try {
+            // Obtén la clave secreta desde el archivo .env
+            $key = env('JWT_SECRET');
+
+            // Decodifica el token usando la clave secreta y el algoritmo HS256
+            $decoded = JWT::decode($token, new Key($key, 'HS256'));
+
+            // Obtén el ID del usuario del payload
+            $userId = $decoded->sub;
+
+            // Busca al usuario en la base de datos
+            $user = User::find($userId);
+
+            if (!$user) {
+                return response()->json(['error' => 'Usuario no encontrado'], 404);
+            }
+
+            // Devuelve los datos del usuario
+            return response()->json($user, 200);
+
+        } catch (\Firebase\JWT\ExpiredException $e) {
+            return response()->json(['error' => 'El token ha expirado'], 401);
+        } catch (\Firebase\JWT\SignatureInvalidException $e) {
+            return response()->json(['error' => 'La firma del token es inválida'], 401);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Token inválido o no procesable'], 401);
+        }
+    }
+
+    
 }
 

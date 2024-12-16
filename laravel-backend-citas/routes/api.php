@@ -8,6 +8,7 @@ use App\Http\Controllers\API\TaskController;
 Route::post('register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('refresh', [AuthController::class, 'refresh']);
+Route::get('/user', [AuthController::class, 'user']);
 
 Route::middleware([\App\Http\Middleware\JwtMiddleware::class])->group(function () {
     Route::post('/tasks', [TaskController::class, 'store']);
@@ -18,7 +19,9 @@ Route::middleware([\App\Http\Middleware\JwtMiddleware::class])->group(function (
 
 Route::middleware([\App\Http\Middleware\JwtMiddleware::class])->group(function () {
     Route::get('/tasks/{id}', [TaskController::class, 'show']);
-   // Route::put('/tasks/{id}', [TaskController::class, 'update']);
-   // Route::delete('/tasks/{id}', [TaskController::class, 'destroy']);
 });
+
+
+
+
 

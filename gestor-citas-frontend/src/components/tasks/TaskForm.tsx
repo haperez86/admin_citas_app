@@ -1,7 +1,7 @@
 import { UseFormRegister, FieldErrors} from 'react-hook-form'
 import ErrorMessage from "../ErrorMessage"
 import { TaskFormData } from '../../types'
-import { DatePickerComponent } from '../DatePickerComponent'
+
 
 type TaskFormProps = {
     register: UseFormRegister<TaskFormData>
@@ -55,11 +55,18 @@ export default function TaskFormProps({errors, register} : TaskFormProps) {
 
                 <input
                     id="due_date"
-                    className="w-full p-3  border border-gray-200"
-                    type="text"
-                    placeholder="Fecha de Vencimiento"
+                    className="w-full p-3 border border-gray-200"
+                    type="date"
                     {...register("due_date", {
-                        required: "Fecha de Vnecimiento es obligatoria",
+                        required: "La fecha de vencimiento es obligatoria",
+                        validate: (value) => {
+                            const selectedDate = new Date(value);
+                            const currentDate = new Date();
+                            if (selectedDate < currentDate) {
+                                return "La fecha de vencimiento no puede ser anterior a hoy";
+                            }
+                            return true;
+                        },
                     })}
                 />
 
@@ -72,15 +79,21 @@ export default function TaskFormProps({errors, register} : TaskFormProps) {
                 <label htmlFor="status" className="text-sm uppercase font-bold">
                     Estado
                 </label>
-                <input
+                
+                <select
                     id="status"
-                    className="w-full p-3  border border-gray-200"
-                    type="text"
-                    placeholder="Estado"
+                    className="w-full p-3 border border-gray-200"
                     {...register("status", {
-                        required: "Estado Obligratorio",
+                        required: "El estado es obligatorio",
                     })}
-                />
+                >
+                    <option value="" disabled>
+                        Selecciona un estado
+                    </option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="en progreso">En progreso</option>
+                    <option value="completada">Completada</option>
+                </select>
 
                 {errors.status && (
                     <ErrorMessage>{errors.status.message}</ErrorMessage>

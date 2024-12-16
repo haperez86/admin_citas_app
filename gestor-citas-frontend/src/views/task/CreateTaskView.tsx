@@ -1,11 +1,14 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useForm } from 'react-hook-form'
 import TaskForm from "../../components/tasks/TaskForm"
 import { TaskFormData } from "../../types"
 import { createTask } from "../../api/TaskApi"
+import { toast } from "react-toastify"
+import { useMutation } from "@tanstack/react-query"
 
 export default function CreateTaskView() {
 
+    const navigate = useNavigate()
     const initialValues: TaskFormData = {
         title: "",
         description: "",
@@ -14,9 +17,19 @@ export default function CreateTaskView() {
     }
     const { register, handleSubmit, formState: { errors } } = useForm({ defaultValues: initialValues })
 
-    const handleForm = (data: TaskFormData) => {
-        createTask(data)
-    }
+    const {mutate} = useMutation({
+        mutationFn: createTask,
+        onError: (error) => {
+            toast.error(error.message)
+        },
+        onSuccess: () => {
+            toast.success('Tarea Creda')
+            navigate('/')
+        }
+    })
+
+    const handleForm = async (formData: TaskFormData) => mutate(formData)
+    
 
     return (
         <>

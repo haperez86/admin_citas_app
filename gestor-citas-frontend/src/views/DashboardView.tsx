@@ -2,14 +2,27 @@ import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { EllipsisVerticalIcon } from '@heroicons/react/20/solid'
 import { Link } from "react-router-dom"
-import { useQuery } from '@tanstack/react-query'
-import { getTasks } from '../api/TaskApi'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { deleteTask, getTasks } from '../api/TaskApi'
+import { toast } from 'react-toastify'
 
 export default function DashboardView() {
 
   const { data, isLoading } = useQuery({
     queryKey:['tasks'],
     queryFn: getTasks
+  })
+
+  const queryClient = useQueryClient()
+  const { mutate} = useMutation({
+    mutationFn: deleteTask,
+    onError: (error) => {
+      toast.error(error.message)
+    },
+    onSuccess: (data) => {
+      toast.success('Tarea Eliminada')
+      queryClient.invalidateQueries({queryKey: ['tasks']})
+    }
   })
 
   if(isLoading) return 'Cargando...'
@@ -61,12 +74,6 @@ export default function DashboardView() {
                                className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
                            >
                                    <Menu.Item>
-                                       <Link to={``}
-                                           className='block px-3 py-1 text-sm leading-6 text-gray-900'>
-                                       Ver Tarea
-                                       </Link>
-                                   </Menu.Item>
-                                   <Menu.Item>
                                        <Link to={`/tasks/${tasks.id}/edit`}
                                            className='block px-3 py-1 text-sm leading-6 text-gray-900'>
                                        Editar Tarea
@@ -76,7 +83,7 @@ export default function DashboardView() {
                                        <button 
                                            type='button' 
                                            className='block px-3 py-1 text-sm leading-6 text-red-500'
-                                           onClick={() => {} }
+                                           onClick={() => mutate(tasks.id) }
                                        >
                                            Eliminar Tarea
                                        </button>
@@ -90,7 +97,11 @@ export default function DashboardView() {
      </ul>
         
       ) : (
-        <p className='text-center py-20'> No hay proyectos aun {''}
+        <p className='text-center py-20'> No hay Tareas aún {''}
+           <Link
+            to='/tasks/create'
+            className=" text-fuchsia-500 font-bold"
+          >Crear Tarea</Link>
 
         </p>
       )}

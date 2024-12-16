@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import TaskFormProps from "./TaskForm";
 import { Task, TaskFormData } from "../../types";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateTask } from "../../api/TaskApi";
 import { toast } from "react-toastify";
 
@@ -22,12 +22,15 @@ export default function EditTaskForm({data, tasksId} : EditTaskProps) {
             status: data.status,
         }})
 
+        const queryClient = useQueryClient()
         const { mutate } = useMutation({
             mutationFn: updateTask,
             onError: (error) => {
                 toast.error(error.message)
             },
             onSuccess: (data) =>{
+                queryClient.invalidateQueries({queryKey: ['tasks']})
+                queryClient.invalidateQueries({queryKey: ['editTask', tasksId]})
                 toast.success('Tarea Actualizada')
                 navigate('/')
             }

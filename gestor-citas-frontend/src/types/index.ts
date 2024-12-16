@@ -12,6 +12,16 @@ type Auth = z.infer<typeof authSchema>
 export type UserLoginForm = Pick<Auth, 'email'| 'password'>
 export type UserRegistrationForm = Pick<Auth, 'name' | 'email' | 'password' | 'password_confirmation'>
 
+/** Users */
+export const userSchema = authSchema.pick({
+    name: true,
+    email: true,
+}).extend({
+    id: z.union([z.string(), z.number()]).transform(String), // Convierte a string si es necesario.
+});
+
+export type User = z.infer<typeof userSchema>
+
 /** Tasks */
 export const taskSchema = z.object({
     id: z.number(),
